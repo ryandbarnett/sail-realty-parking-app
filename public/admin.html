@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Dashboard - Transactions</title>
+  <link rel="stylesheet" href="admin.css" />
+</head>
+<body>
+  <header>
+    <h1>Sail Parking Admin</h1>
+  </header>
+
+  <main>
+    <p id="loading-message" aria-live="polite">Loading transactions...</p>
+    <p id="error-message" role="alert" style="color: red;"></p>
+
+    <table id="transactions-table">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>License Plate</th>
+          <th>Hours</th>
+          <th>Start Time</th>
+          <th>Expire Time</th>
+          <th>Paid At</th>
+          <th>Stripe Session</th>
+        </tr>
+      </thead>
+      <tbody id="transactions-body">
+        <!-- Rows will be dynamically inserted here -->
+      </tbody>
+    </table>
+  </main>
+
+  <script src="admin.js"></script>
+</body>
+</html>

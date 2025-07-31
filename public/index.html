@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#003366" />
+  <meta name="apple-mobile-web-app-title" content="Sail Parking" />
+
+  <title>Sail Realty Parking Payment</title>
+
+  <link rel="icon" type="image/png" href="/images/favicon-96x96.png" sizes="96x96" />
+  <link rel="icon" type="image/svg+xml" href="/images/favicon.svg" />
+  <link rel="shortcut icon" href="/images/favicon.ico" />
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png" />
+  <link rel="manifest" href="/images/site.webmanifest" />
+
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header>
+    <img src="images/main-logo.png" alt="Sail Realty Inc. Logo" class="logo" />
+    <h1 id="form-title">Sail Realty Parking Payment</h1>
+  </header>
+  <main>
+    <section aria-labelledby="form-title">
+      <form id="payment-form">
+        <label for="licensePlate">License Plate</label>
+        <input
+          type="text"
+          id="licensePlate"
+          name="licensePlate"
+          required
+          maxlength="10"
+          pattern="[A-Za-z0-9]{1,10}"
+        />
+
+        <label for="hours">Number of Hours ($6/hour)</label>
+        <input
+          type="number"
+          id="hours"
+          name="hours"
+          required
+          min="1"
+          max="12"
+          value="1"
+          inputmode="numeric"
+          pattern="\d*"
+        />
+
+        <button type="submit">Pay Now</button>
+      </form>
+
+      <div id="message"></div>
+    </section>
+  </main>
+  <footer>
+    <p>Need help? Contact us:</p>
+    <p><strong>Phone:</strong> <a href="tel:+13108217245">(310) 821-7245</a></p>
+    <p><strong>Email:</strong> <a href="mailto:kacey@sailrealty.net" target="_blank" rel="noopener">kacey@sailrealty.net</a></p>
+  </footer>
+  <script src="script.js"></script>
+</body>
+</html>

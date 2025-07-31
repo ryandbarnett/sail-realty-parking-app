@@ -1,0 +1,25 @@
+{
+  "name": "parking-app",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "^17.2.0",
+    "express": "^5.1.0",
+    "luxon": "^3.7.1",
+    "sqlite3": "^5.1.7",
+    "stripe": "^18.3.0"
+  },
+  "devDependencies": {
+    "jest": "^30.0.5"
+  },
+  "jest": {
+    "testEnvironment": "node"
+  }
+}
