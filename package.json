@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "jest",
+    "test": "jest --testPathIgnorePatterns=tests/public",
     "test:frontend": "node --experimental-vm-modules node_modules/.bin/jest --config jest.frontend.config.mjs"
   },
   "keywords": [],
