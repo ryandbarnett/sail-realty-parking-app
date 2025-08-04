@@ -1,5 +1,5 @@
-import { setupFormHandlers } from './formHandler.js';
-import { setupParkingAvailabilityChecker } from './parkingAvailability.js';
+import { setupFormHandlers } from './formHandler.mjs';
+import { setupParkingAvailabilityChecker } from './parkingAvailability.mjs';
 
 const form = document.getElementById('payment-form');
 const messageDiv = document.getElementById('message');

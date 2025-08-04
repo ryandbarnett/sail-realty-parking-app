@@ -1,6 +1,6 @@
-import { fetchTransactions } from './admin/fetchTransactions.js';
-import { renderTransactionTable } from './admin/renderTransactionTable.js';
-import { showError } from './admin/showError.js';
+import { fetchTransactions } from './admin/fetchTransactions.mjs';
+import { renderTransactionTable } from './admin/renderTransactionTable.mjs';
+import { showError } from './admin/showError.mjs';
 
 document.addEventListener('DOMContentLoaded', async () => {
   const tableBody = document.querySelector('#transactions-body');
