@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "jest"
+    "test": "jest",
+    "test:frontend": "node --experimental-vm-modules node_modules/.bin/jest --config jest.frontend.config.mjs"
   },
   "keywords": [],
   "author": "",
@@ -17,9 +18,9 @@
     "stripe": "^18.3.0"
   },
   "devDependencies": {
-    "jest": "^30.0.5"
-  },
-  "jest": {
-    "testEnvironment": "node"
+    "@testing-library/dom": "^10.4.1",
+    "@testing-library/jest-dom": "^6.6.4",
+    "jest": "^30.0.5",
+    "jest-environment-jsdom": "^30.0.5"
   }
 }
