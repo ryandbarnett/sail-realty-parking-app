@@ -1,0 +1,84 @@
+/* --------------------------------
+   Admin Page Base Styles
+-------------------------------- */
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-size: 16px;
+  background-color: #f0f2f5;
+  color: #333;
+  padding: 20px;
+  line-height: 1.6;
+}
+
+h1 {
+  text-align: center;
+  color: #003366;
+  margin-bottom: 30px;
+}
+
+/* --------------------------------
+   Table Styles
+-------------------------------- */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: white;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+}
+
+thead {
+  background-color: #003366;
+  color: #fff;
+}
+
+th,
+td {
+  padding: 12px 16px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+}
+
+th {
+  font-weight: bold;
+}
+
+tbody tr:hover {
+  background-color: #f1f1f1;
+}
+
+/* --------------------------------
+   Active Row Highlighting
+-------------------------------- */
+tr.active {
+  background-color: #e0fbe0; /* light green */
+}
+
+tr.active td {
+  border-left: 4px solid #2ecc71;
+}
+
+/* --------------------------------
+   Error Message Styles
+-------------------------------- */
+#error {
+  color: red;
+  font-weight: bold;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+/* --------------------------------
+   Responsive Table
+-------------------------------- */
+@media (max-width: 768px) {
+  table {
+    font-size: 14px;
+  }
+
+  th,
+  td {
+    padding: 10px;
+  }
+}
