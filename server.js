@@ -1,13 +1,17 @@
-// Load env vars and dependencies
-require('dotenv').config();
+// Load environment variables
+const environment = process.env.NODE_ENV || 'development';
+const envFile = environment === 'production' ? '.env.production' : '.env';
+require('dotenv').config({ path: envFile });
+
 const express = require('express');
 const path = require('path');
 const { DateTime } = require('luxon');
 
-// Load app-specific modules
 const db = require('./utils/db'); // Initializes DB
+
 const { handleCreateCheckoutSession } = require('./controllers/checkoutController');
 const { handleStripeWebhook } = require('./controllers/stripeWebhookController');
+
 const getRemainingAllowedParkingHours = require('./utils/dateUtils/getRemainingAllowedParkingHours');
 const { TIMEZONE } = require('./utils/constants');
 
