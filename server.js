@@ -1,30 +1,42 @@
+// Load env vars and dependencies
 require('dotenv').config();
-
 const express = require('express');
 const path = require('path');
 const { DateTime } = require('luxon');
 
+// Load app-specific modules
 const db = require('./utils/db'); // Initializes DB
 const { handleCreateCheckoutSession } = require('./controllers/checkoutController');
+const { handleStripeWebhook } = require('./controllers/stripeWebhookController');
 const getRemainingAllowedParkingHours = require('./utils/dateUtils/getRemainingAllowedParkingHours');
 const { TIMEZONE } = require('./utils/constants');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+// ✅ Stripe webhook — must come before express.json
+// Capture raw body for Stripe webhook signature verification
+app.post(
+  '/webhook',
+  express.raw({ type: 'application/json' }),
+  (req, res, next) => {
+    req.rawBody = req.body; // 👈 manually assign raw body
+    next();
+  },
+  handleStripeWebhook
+);
+
+// General middleware
 app.use(express.json());
-
-// Health check — defined early for fast access even if other things are broken
-app.get('/health', (req, res) => {
-  res.send('OK');
-});
-
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Route: Stripe checkout session
+// Health check
+app.get('/health', (req, res) => res.send('OK'));
+
+// Payment routes
 app.post('/create-checkout-session', handleCreateCheckoutSession);
 
-// Route: Remaining allowed parking hours
+// Parking hours route
 app.get('/remaining-hours', (req, res) => {
   try {
     const now = DateTime.now().setZone(TIMEZONE);
@@ -36,6 +48,7 @@ app.get('/remaining-hours', (req, res) => {
   }
 });
 
+// Admin transaction history route
 app.get('/admin/transactions', (req, res) => {
   const now = DateTime.now().setZone(TIMEZONE).toMillis();
 
@@ -47,7 +60,6 @@ app.get('/admin/transactions', (req, res) => {
 
     const formatted = rows.map((row) => {
       const isActive = row.expire_time > now;
-
       return {
         id: row.id,
         licensePlate: row.license_plate,
@@ -56,7 +68,7 @@ app.get('/admin/transactions', (req, res) => {
         expireTime: DateTime.fromMillis(row.expire_time).toISO(),
         paidAt: DateTime.fromMillis(row.paid_at).toISO(),
         stripeSessionId: row.stripe_session_id,
-        isActive, // 👈 Add this field for the frontend
+        isActive,
       };
     });
 
@@ -64,7 +76,7 @@ app.get('/admin/transactions', (req, res) => {
   });
 });
 
-// Start server
+// Start the server
 app.listen(PORT, () => {
   console.log(`🚀 Server listening on port ${PORT}`);
 });
