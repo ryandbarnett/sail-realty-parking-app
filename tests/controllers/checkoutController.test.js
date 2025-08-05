@@ -1,3 +1,4 @@
+// tests/controllers/checkoutController.test.js
 const { DateTime } = require('luxon');
 const { TIMEZONE } = require('../../utils/constants');
 const isParkingAllowed = require('../../utils/dateUtils/isParkingAllowed');
