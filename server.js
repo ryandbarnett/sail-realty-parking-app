@@ -83,4 +83,5 @@ app.get('/admin/transactions', (req, res) => {
 // Start the server
 app.listen(PORT, () => {
   console.log(`🚀 Server listening on port ${PORT}`);
+  console.log(`🌍 Running in ${environment} mode`);
 });
