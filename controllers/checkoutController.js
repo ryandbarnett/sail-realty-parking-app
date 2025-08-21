@@ -15,15 +15,17 @@ async function handleCreateCheckoutSession(req, res) {
   }
 
   const now = DateTime.now().setZone(TIMEZONE);
-  if (!isParkingAllowed(now)) {
+
+  // ✅ Allow-Anytime override for live smoke tests
+  const allowAnytime = process.env.ALLOW_PARKING_ANYTIME === 'true';
+  if (!allowAnytime && !isParkingAllowed(now)) {
     return res.status(400).json({ error: 'Parking is not allowed at this time. Please try during allowed hours.' });
   }
 
   try {
     const session = await createCheckoutSession({
       licensePlate,
-      hours,
-      origin: req.headers.origin
+      hours
     });
 
     res.json({ url: session.url });

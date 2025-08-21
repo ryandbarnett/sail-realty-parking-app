@@ -2,9 +2,11 @@ const Stripe = require('stripe');
 const { DateTime } = require('luxon');
 const { TIMEZONE } = require('../constants');
 
+// ✅ Initialize Stripe once, reuse across requests
+const stripe = Stripe(process.env.STRIPE_SECRET_KEY);
+
 // Creates a Stripe Checkout session for parking
-async function createCheckoutSession({ licensePlate, hours, origin }) {
-  const stripe = Stripe(process.env.STRIPE_SECRET_KEY); // ← moved inside
+async function createCheckoutSession({ licensePlate, hours }) {
   const pricePerHour = 600; // cents ($6)
   const amount = pricePerHour * hours;
 
@@ -21,8 +23,8 @@ async function createCheckoutSession({ licensePlate, hours, origin }) {
       quantity: 1,
     }],
     mode: 'payment',
-    success_url: `${origin}/success.html?session_id={CHECKOUT_SESSION_ID}`,
-    cancel_url: `${origin}/index.html`,
+    success_url: `${process.env.APP_BASE_URL}/success.html?session_id={CHECKOUT_SESSION_ID}`,
+    cancel_url: `${process.env.APP_BASE_URL}/index.html`,
     metadata: {
       licensePlate,
       hours: hours.toString(),

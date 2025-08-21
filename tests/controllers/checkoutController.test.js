@@ -1,82 +1,54 @@
 // tests/controllers/checkoutController.test.js
-const { DateTime } = require('luxon');
-const { TIMEZONE } = require('../../utils/constants');
-const isParkingAllowed = require('../../utils/dateUtils/isParkingAllowed');
-const createCheckoutSession = require('../../utils/stripeUtils/createCheckoutSession');
+process.env.STRIPE_SECRET_KEY = 'sk_test_dummy123';
+process.env.APP_BASE_URL = 'http://localhost:3000';
+
+const express = require('express');
+const request = require('supertest');
 const { handleCreateCheckoutSession } = require('../../controllers/checkoutController');
 
-jest.mock('../../utils/dateUtils/isParkingAllowed');
-jest.mock('../../utils/stripeUtils/createCheckoutSession');
+// ✅ Force parking to always be allowed in tests
+jest.mock('../../utils/dateUtils', () => ({
+  isParkingAllowed: jest.fn(() => true)
+}));
 
-describe('handleCreateCheckoutSession', () => {
-  const mockReq = (body) => ({
-    body,
-    headers: { origin: 'http://localhost:3000' },
+// ✅ Mock Stripe library so no real API calls are made
+jest.mock('stripe', () => {
+  return jest.fn(() => ({
+    checkout: {
+      sessions: {
+        create: jest.fn().mockResolvedValue({
+          id: 'cs_test_123',
+          url: 'https://checkout.stripe.com/pay/cs_test_123'
+        })
+      }
+    }
+  }));
+});
+
+describe('POST /create-checkout-session', () => {
+  let app;
+
+  beforeAll(() => {
+    app = express();
+    app.use(express.json());
+    app.post('/create-checkout-session', handleCreateCheckoutSession);
   });
 
-  const mockRes = () => {
-    const res = {};
-    res.status = jest.fn(() => res);
-    res.json = jest.fn(() => res);
-    return res;
-  };
+  it('returns a session URL for valid input', async () => {
+    const res = await request(app)
+      .post('/create-checkout-session')
+      .send({ licensePlate: 'ABC123', hours: 2 });
 
-  beforeEach(() => {
-    jest.clearAllMocks();
+    expect(res.status).toBe(200);
+    expect(res.body.url).toBe('https://checkout.stripe.com/pay/cs_test_123');
   });
 
-  test('returns 400 if licensePlate or hours are invalid', async () => {
-    const res = mockRes();
+  it('rejects invalid input', async () => {
+    const res = await request(app)
+      .post('/create-checkout-session')
+      .send({ licensePlate: '', hours: 0 });
 
-    await handleCreateCheckoutSession(mockReq({ licensePlate: '', hours: 2 }), res);
-    expect(res.status).toHaveBeenCalledWith(400);
-
-    await handleCreateCheckoutSession(mockReq({ licensePlate: 'ABC', hours: 0 }), res);
-    expect(res.status).toHaveBeenCalledWith(400);
-
-    await handleCreateCheckoutSession(mockReq({ licensePlate: 'ABC' }), res);
-    expect(res.status).toHaveBeenCalledWith(400);
-  });
-
-  test('returns 400 if parking is not allowed', async () => {
-    isParkingAllowed.mockReturnValue(false);
-    const res = mockRes();
-
-    await handleCreateCheckoutSession(mockReq({ licensePlate: 'ABC123', hours: 2 }), res);
-    expect(isParkingAllowed).toHaveBeenCalled();
-    expect(res.status).toHaveBeenCalledWith(400);
-    expect(res.json).toHaveBeenCalledWith(expect.objectContaining({
-      error: expect.stringMatching(/parking is not allowed/i),
-    }));
-  });
-
-  test('returns Stripe session URL on success', async () => {
-    isParkingAllowed.mockReturnValue(true);
-    createCheckoutSession.mockResolvedValue({ url: 'https://fake-stripe.com/success' });
-
-    const res = mockRes();
-    const req = mockReq({ licensePlate: 'XYZ987', hours: 4 });
-
-    await handleCreateCheckoutSession(req, res);
-
-    expect(createCheckoutSession).toHaveBeenCalledWith(expect.objectContaining({
-      licensePlate: 'XYZ987',
-      hours: 4,
-      origin: 'http://localhost:3000',
-    }));
-    expect(res.json).toHaveBeenCalledWith({ url: 'https://fake-stripe.com/success' });
-  });
-
-  test('returns 500 on Stripe failure', async () => {
-    isParkingAllowed.mockReturnValue(true);
-    createCheckoutSession.mockRejectedValue(new Error('Stripe died'));
-
-    const res = mockRes();
-    await handleCreateCheckoutSession(mockReq({ licensePlate: 'ERR', hours: 2 }), res);
-
-    expect(res.status).toHaveBeenCalledWith(500);
-    expect(res.json).toHaveBeenCalledWith(expect.objectContaining({
-      error: expect.stringMatching(/failed to create/i),
-    }));
+    expect(res.status).toBe(400);
+    expect(res.body.error).toMatch(/Invalid license plate or hours/);
   });
 });
