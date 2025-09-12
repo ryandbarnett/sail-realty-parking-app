@@ -8,27 +8,16 @@ const path = require('path');
 const { DateTime } = require('luxon');
 
 const db = require('./utils/db'); // Initializes DB
-
 const { handleCreateCheckoutSession } = require('./controllers/checkoutController');
-const { handleStripeWebhook } = require('./controllers/stripeWebhookController');
-
 const getRemainingAllowedParkingHours = require('./utils/dateUtils/getRemainingAllowedParkingHours');
 const { TIMEZONE } = require('./utils/constants');
+const { handleSquareWebhook } = require('./controllers/squareWebhookController');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// ✅ Stripe webhook — must come before express.json
-// Capture raw body for Stripe webhook signature verification
-app.post(
-  '/webhook',
-  express.raw({ type: 'application/json' }),
-  (req, res, next) => {
-    req.rawBody = req.body; // 👈 manually assign raw body
-    next();
-  },
-  handleStripeWebhook
-);
+// --- Webhooks (must be BEFORE express.json so we have the raw body) ---
+app.post('/webhooks/square', express.raw({ type: '*/*' }), handleSquareWebhook);
 
 // General middleware
 app.use(express.json());
@@ -76,6 +65,7 @@ app.get('/admin/transactions', (req, res) => {
         startTime: DateTime.fromMillis(row.start_time).toISO(),
         expireTime: DateTime.fromMillis(row.expire_time).toISO(),
         paidAt: DateTime.fromMillis(row.paid_at).toISO(),
+        // NOTE: legacy column name; now stores Square paymentId
         stripeSessionId: row.stripe_session_id,
         isActive,
       };

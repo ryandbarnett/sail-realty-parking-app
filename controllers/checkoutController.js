@@ -1,7 +1,7 @@
 const { DateTime } = require('luxon');
 const { TIMEZONE } = require('../utils/constants');
 const { isParkingAllowed } = require('../utils/dateUtils');
-const { createCheckoutSession } = require('../utils/stripeUtils');
+const { createPaymentLink } = require('../utils/squareUtils/createPaymentLink');
 
 async function handleCreateCheckoutSession(req, res) {
   const { licensePlate, hours } = req.body;
@@ -23,29 +23,31 @@ async function handleCreateCheckoutSession(req, res) {
   }
 
   try {
-    const session = await createCheckoutSession({
-      licensePlate,
-      hours
+    if (!process.env.SQUARE_ACCESS_TOKEN) {
+      throw new Error('Square is not configured (missing SQUARE_ACCESS_TOKEN).');
+    }
+
+    const link = await createPaymentLink({ licensePlate, hours });
+    if (!link?.url) throw new Error('Square did not return a payment link URL');
+
+    return res.json({ url: link.url, provider: 'square', id: link.id || null });
+  } catch (err) {
+    console.error('Payment session creation error:', {
+      message: err.message,
+      code: err.code,
+      type: err.type,
+      stack: err.stack,
     });
 
-    res.json({ url: session.url });
-  } catch (err) {
-    console.error('Stripe session creation error:', {
-    message: err.message,
-    code: err.code,
-    type: err.type,
-    stack: err.stack,
-  });
-    
-  res.status(500).json({
-    error: 'Failed to create payment session.',
-    details: err.message,   // 👈 expose Stripe’s actual error text
-    code: err.code || 'UNKNOWN',
-    type: err.type || 'Error',
-  });
-}
+    res.status(500).json({
+      error: 'Failed to create payment session.',
+      details: err.message,
+      code: err.code || 'UNKNOWN',
+      type: err.type || 'Error',
+    });
+  }
 }
 
 module.exports = {
-  handleCreateCheckoutSession
+  handleCreateCheckoutSession,
 };
