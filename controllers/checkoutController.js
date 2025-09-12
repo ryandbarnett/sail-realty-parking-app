@@ -30,9 +30,20 @@ async function handleCreateCheckoutSession(req, res) {
 
     res.json({ url: session.url });
   } catch (err) {
-    console.error('Stripe session creation error:', err);
-    res.status(500).json({ error: 'Failed to create payment session.' });
-  }
+    console.error('Stripe session creation error:', {
+    message: err.message,
+    code: err.code,
+    type: err.type,
+    stack: err.stack,
+  });
+    
+  res.status(500).json({
+    error: 'Failed to create payment session.',
+    details: err.message,   // 👈 expose Stripe’s actual error text
+    code: err.code || 'UNKNOWN',
+    type: err.type || 'Error',
+  });
+}
 }
 
 module.exports = {
