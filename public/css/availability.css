@@ -1,0 +1,37 @@
+/* Availability Page Styles */
+
+.availability-container {
+  max-width: 600px;
+  margin: 40px auto;
+  background: #fff;
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.availability-container h1,
+.availability-container h2 {
+  text-align: center;
+  color: #003366;
+  margin-bottom: 20px;
+}
+
+.availability-container ul {
+  margin: 0 0 20px 25px;
+}
+
+.availability-container li {
+  margin-bottom: 12px;
+  line-height: 1.6;
+}
+
+.availability-container strong {
+  color: #002147;
+}
+
+.availability-footer {
+  text-align: center;
+  margin-top: 40px;
+  font-size: 14px;
+  color: #666;
+}

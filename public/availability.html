@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Sail Realty Parking – Parking Availability & Holidays</title>
+  <link rel="stylesheet" href="css/availability.css" />
+</head>
+<body>
+  <main class="availability-container">
+    <h1>Parking Availability</h1>
+    <ul>
+      <li><strong>No public parking</strong> Monday–Friday, 7:00 AM – 5:00 PM (reserved for Sail Realty staff).</li>
+      <li>Public parking is available <strong>evenings, weekends, and recognized holidays</strong>.</li>
+      <li>Overnight parking is allowed, but <strong>maximum stay is 24 hours</strong>.</li>
+    </ul>
+
+    <h2>Recognized Holidays</h2>
+    <p>Public parking is allowed all day on the following holidays. Standard rates and the 24-hour maximum still apply.</p>
+
+    <ul>
+      <li>New Year’s Day (Jan 1)</li>
+      <li>Memorial Day</li>
+      <li>Independence Day (Jul 4)</li>
+      <li>Labor Day</li>
+      <li>Thanksgiving Day</li>
+      <li>Day after Thanksgiving</li>
+      <li><strong>Holiday Range:</strong> December 24 (Christmas Eve) through January 1 (New Year’s Day)</li>
+    </ul>
+
+    <p><a href="/">← Back to Home</a></p>
+  </main>
+
+  <footer class="availability-footer">
+    © <span id="year"></span> Sail Realty. All rights reserved. | 
+    <a href="mailto:bill@sailrealty.net">Contact</a>
+  </footer>
+
+  <script>
+    document.getElementById('year').textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>

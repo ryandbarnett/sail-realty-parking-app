@@ -21,6 +21,7 @@
     <img src="images/main-logo.png" alt="Sail Realty Inc. Logo" class="logo" />
     <h1 id="form-title">Sail Realty Parking Payment</h1>
   </header>
+
   <main>
     <section aria-labelledby="form-title">
       <form id="payment-form">
@@ -44,7 +45,7 @@
           max="12"
           value="1"
           inputmode="numeric"
-          pattern="\d*"
+          pattern="\\d*"
         />
 
         <button type="submit">Pay Now</button>
@@ -53,13 +54,27 @@
       <div id="message"></div>
     </section>
   </main>
+
+  <!-- New: Parking info block -->
+  <section id="parking-info" aria-labelledby="parking-info-title">
+    <h2 id="parking-info-title">Parking Availability</h2>
+    <ul>
+      <li><strong>No public parking</strong> Monday–Friday, 7:00 AM – 5:00 PM (reserved for Sail Realty staff).</li>
+      <li>Public parking is available <strong>evenings, weekends, and recognized holidays</strong>.</li>
+      <li>Overnight parking is allowed, but <strong>maximum stay is 24 hours</strong>.</li>
+    </ul>
+    <p><a href="/availability.html">See list of recognized holidays</a></p>
+  </section>
+
   <footer>
     <p>Need help? Contact us:</p>
     <p><strong>Email:</strong> 
       <a href="mailto:bill@sailrealty.net" target="_blank" rel="noopener">bill@sailrealty.net</a>
     </p>
     <p>
-      <a href="/terms.html">Terms &amp; Conditions</a>
+      Parking subject to our 
+      <a href="/availability.html">Availability Rules</a> and 
+      <a href="/terms.html">Terms &amp; Conditions</a>.
     </p>
   </footer>
 
