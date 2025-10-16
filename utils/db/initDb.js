@@ -22,6 +22,12 @@ function initializeDatabase(dbPath = './db.sqlite') {
         paid_at INTEGER NOT NULL
       )
     `);
+
+    // 🌟 New: make Square paymentId unique (prevents duplicates)
+    db.run(`
+      CREATE UNIQUE INDEX IF NOT EXISTS ux_payments_square_id
+      ON payments (stripe_session_id)
+    `);
   });
 
   return db;
