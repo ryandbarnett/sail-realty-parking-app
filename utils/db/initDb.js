@@ -1,12 +1,23 @@
 // utils/db/initDb.js
+const fs = require('fs');
+const path = require('path');
 const sqlite3 = require('sqlite3').verbose();
 
-function initializeDatabase(dbPath = './db.sqlite') {
+function initializeDatabase() {
+  // Prefer environment variable, fallback to local file
+  const dbPath = process.env.DB_PATH || path.resolve(__dirname, '../../db.sqlite');
+
+  // Ensure the directory exists
+  const dir = path.dirname(dbPath);
+  if (!fs.existsSync(dir)) {
+    fs.mkdirSync(dir, { recursive: true });
+  }
+
   const db = new sqlite3.Database(dbPath, (err) => {
     if (err) {
       console.error('❌ Failed to connect to DB:', err);
     } else {
-      console.log('✅ Connected to SQLite DB.');
+      console.log(`✅ Connected to SQLite DB at ${dbPath}`);
     }
   });
 
@@ -23,7 +34,6 @@ function initializeDatabase(dbPath = './db.sqlite') {
       )
     `);
 
-    // 🌟 New: make Square paymentId unique (prevents duplicates)
     db.run(`
       CREATE UNIQUE INDEX IF NOT EXISTS ux_payments_square_id
       ON payments (stripe_session_id)
