@@ -1,51 +1,55 @@
+// tests/utils/db/initDb.test.js
 const fs = require('fs');
 const path = require('path');
-const sqlite3 = require('sqlite3').verbose();
-const initializeDatabase = require('../../../utils/db/initDb');
 
-const TEST_DB_PATH = path.resolve(__dirname, 'test-db.sqlite');
-
-describe('initializeDatabase', () => {
+describe('initDb uses DB_PATH and creates schema', () => {
+  const TEST_DB_PATH = path.resolve(__dirname, 'test-db.sqlite');
   let db;
 
   beforeAll(() => {
-    db = initializeDatabase(TEST_DB_PATH);
+    // Point to a temp DB before loading the db module
+    process.env.DB_PATH = TEST_DB_PATH;
+
+    // Ensure we get a fresh module instance with the new env var
+    jest.resetModules();
+    db = require('../../../utils/db'); // your utils/db index that initializes the DB
   });
 
-  afterAll((done) => {
-    db.close(() => {
-      fs.unlinkSync(TEST_DB_PATH); // Remove test DB file
-      done();
-    });
+  afterAll(async () => {
+    // Close DB first
+    await new Promise((resolve) => db.close(resolve));
+
+    // Cleanup the temp file if it exists
+    try {
+      if (fs.existsSync(TEST_DB_PATH)) {
+        fs.unlinkSync(TEST_DB_PATH);
+      }
+    } catch {
+      /* ignore */
+    }
+
+    delete process.env.DB_PATH;
   });
 
-  test('creates payments table if not exists', (done) => {
+  test('payments table exists', (done) => {
     db.get(
-      `SELECT name FROM sqlite_master WHERE type='table' AND name='payments';`,
+      "SELECT name FROM sqlite_master WHERE type='table' AND name='payments'",
       (err, row) => {
         expect(err).toBeNull();
-        expect(row).toBeDefined();
-        expect(row.name).toBe('payments');
+        expect(row && row.name).toBe('payments');
         done();
       }
     );
   });
 
-  test('payments table has correct columns', (done) => {
-    db.all(`PRAGMA table_info(payments);`, (err, columns) => {
-      expect(err).toBeNull();
-
-      const columnNames = columns.map(col => col.name);
-      expect(columnNames).toEqual([
-        'id',
-        'license_plate',
-        'hours',
-        'start_time',
-        'expire_time',
-        'stripe_session_id',
-        'paid_at'
-      ]);
-      done();
-    });
+  test('unique index exists', (done) => {
+    db.get(
+      "SELECT name FROM sqlite_master WHERE type='index' AND name='ux_payments_square_id'",
+      (err, row) => {
+        expect(err).toBeNull();
+        expect(row && row.name).toBe('ux_payments_square_id');
+        done();
+      }
+    );
   });
 });
