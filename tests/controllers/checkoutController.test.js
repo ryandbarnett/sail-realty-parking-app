@@ -54,6 +54,8 @@ describe('handleCreateCheckoutSession (Square)', () => {
   });
 
   test('500 if Square not configured', async () => {
+    const spy = jest.spyOn(console, 'error').mockImplementation(() => {}); // silence expected error
+
     delete process.env.SQUARE_ACCESS_TOKEN;
     const req = { body: { licensePlate: 'XYZ789', hours: 1 } };
     const res = makeRes();
@@ -62,5 +64,7 @@ describe('handleCreateCheckoutSession (Square)', () => {
 
     expect(res._status).toBe(500);
     expect(res._json).toHaveProperty('error');
+
+    spy.mockRestore(); // restore console.error afterward
   });
 });
