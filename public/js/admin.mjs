@@ -60,12 +60,10 @@ function renderTransactionTable(transactions, tableBody) {
     if (active) tr.classList.add('active');
 
     tr.innerHTML = `
-      <td>${tx.id}</td>
       <td>${tx.licensePlate ?? ''}</td>
       <td>${tx.hours ?? ''}</td>
       <td>${fmt(tx.startTime)}</td>
       <td>${fmt(tx.expireTime)}</td>
-      <td>${active ? 'Active' : 'Expired'}</td>
     `;
 
     tableBody.appendChild(tr);
