@@ -4,7 +4,7 @@ const isParkingAllowed = require('./isParkingAllowed');
 
 function getRemainingAllowedParkingHours(startDate) {
   const start = startDate.setZone(TIMEZONE);
-  let current = start.plus({ hours: 1 }).startOf('hour'); // Always start at next hour
+  let current = start.startOf('hour');
 
   let count = 0;
   const MAX_HOURS = 72;
