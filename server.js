@@ -32,14 +32,16 @@ app.post('/create-checkout-session', handleCreateCheckoutSession);
 // Parking hours route
 app.get('/remaining-hours', (req, res) => {
   try {
-    // ✅ TEMP OVERRIDE for live smoke test
-    if (process.env.ALLOW_PARKING_ANYTIME === 'true') {
-      return res.json({ remainingHours: 12 }); // any positive number works
-    }
+    // Optional date override for smoke testing
+    const now = req.query.at
+      ? DateTime.fromISO(req.query.at, { zone: TIMEZONE })
+      : DateTime.now().setZone(TIMEZONE);
 
-    const now = DateTime.now().setZone(TIMEZONE);
     const hours = getRemainingAllowedParkingHours(now);
-    res.json({ remainingHours: hours });
+    res.json({
+      time: now.toISO(),
+      remainingHours: hours
+    });
   } catch (err) {
     console.error('Error calculating remaining hours:', err);
     res.status(500).json({ error: 'Failed to calculate remaining hours' });
