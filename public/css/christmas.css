@@ -1,0 +1,7 @@
+body {
+  background-image: url('/images/christmas-sailboat.jpg');
+  background-size: 100%;              /* zoom out slightly */
+  background-position: center 40%;    /* push view downward */
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+}
