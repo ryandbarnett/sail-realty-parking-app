@@ -7,7 +7,7 @@ describe('getChristmasRange', () => {
     const [start, end] = getChristmasRange(2025);
 
     expect(start.toISODate()).toBe('2025-12-24');
-    expect(end.toISODate()).toBe('2025-12-31');
+    expect(end.toISODate()).toBe('2026-01-04');
     expect(start.zoneName).toBe(TIMEZONE);
     expect(end.zoneName).toBe(TIMEZONE);
   });
@@ -16,8 +16,13 @@ describe('getChristmasRange', () => {
     const [start, end] = getChristmasRange(2030);
 
     expect(start.toISODate()).toBe('2030-12-24');
-    expect(end.toISODate()).toBe('2030-12-31');
+    expect(end.toISODate()).toBe('2031-01-04');
     expect(start.zoneName).toBe(TIMEZONE);
     expect(end.zoneName).toBe(TIMEZONE);
+  });
+
+  test('end date is in the following year', () => {
+    const [, end] = getChristmasRange(2025);
+    expect(end.year).toBe(2026);
   });
 });
