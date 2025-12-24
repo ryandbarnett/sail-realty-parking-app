@@ -8,36 +8,30 @@ const {
   getLaborDay,
   getThanksgiving,
   getDayAfterThanksgiving,
-  getChristmasEve,
-  getNewYearsEve,
   isSameDate,
 } = require('../holidayHelpers');
+const getChristmasRange = require('../holidayHelpers/getChristmasRange');
 
 // Returns true if the provided date is a recognized holiday or in the Christmas–New Year range
 function isRecognizedHoliday(date = DateTime.now().setZone(TIMEZONE)) {
-  const year = date.year;
+  const holidayYear = date.month === 1 ? date.year - 1 : date.year;
 
-  // Static single-day holidays
   const holidays = [
-    getNewYearsDay(year),
-    getIndependenceDay(year),
-    getMemorialDay(year),
-    getLaborDay(year),
-    getThanksgiving(year),
-    getDayAfterThanksgiving(year),
+    getNewYearsDay(date.year),
+    getIndependenceDay(date.year),
+    getMemorialDay(date.year),
+    getLaborDay(date.year),
+    getThanksgiving(date.year),
+    getDayAfterThanksgiving(date.year),
   ];
 
-  // Check fixed holidays
   for (const holiday of holidays) {
     if (isSameDate(date, holiday)) return true;
   }
 
-  // Check range: Dec 24 through Dec 31 (inclusive)
-  const xmasEve = getChristmasEve(year);
-  const newYearsEve = getNewYearsEve(year);
-  if (date >= xmasEve && date <= newYearsEve) return true;
-
-  return false;
+  const [xmasStart, xmasEnd] = getChristmasRange(holidayYear);
+  return date >= xmasStart && date <= xmasEnd;
 }
+
 
 module.exports = isRecognizedHoliday;

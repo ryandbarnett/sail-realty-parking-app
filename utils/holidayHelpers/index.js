@@ -4,8 +4,6 @@ const getMemorialDay = require('./getMemorialDay');
 const getLaborDay = require('./getLaborDay');
 const getThanksgiving = require('./getThanksgiving');
 const getDayAfterThanksgiving = require('./getDayAfterThanksgiving');
-const getChristmasEve = require('./getChristmasEve');
-const getNewYearsEve = require('./getNewYearsEve');
 const isSameDate = require('./isSameDate');
 
 module.exports = {
@@ -15,7 +13,5 @@ module.exports = {
   getLaborDay,
   getThanksgiving,
   getDayAfterThanksgiving,
-  getChristmasEve,
-  getNewYearsEve,
   isSameDate,
 };

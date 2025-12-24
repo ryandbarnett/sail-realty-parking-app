@@ -44,8 +44,9 @@ describe('getRemainingAllowedParkingHours', () => {
   });
 
   test('does not exceed allowed hours near end of holiday range', () => {
-    // Dec 31 is the last holiday, so only a few hours left before Jan 1 (weekday rules resume)
-    expect(getRemainingAllowedParkingHours(setDate('2025-12-31T22:00'))).toBe(33);
+    // Dec 31 is within the extended holiday range, so parking remains allowed
+    // until the max-hour cap is reached
+    expect(getRemainingAllowedParkingHours(setDate('2025-12-31T22:00'))).toBe(72);
   });
 
   test('returns 0 if current time is during a no-parking window and next hour is also restricted', () => {
